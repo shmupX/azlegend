@@ -20,6 +20,7 @@ import com.azlegend.wear.ui.theme.AzLegendTheme
 object Routes {
     const val LIBRARY = "library"
     const val PLAYER = "player"
+    const val REMOTE = "remote"
     const val ARG_ALBUM = "albumId"
     const val ALBUM = "album/{$ARG_ALBUM}"
 
@@ -50,6 +51,7 @@ fun WearApp(container: AppContainer, openPlayerRequests: Int) {
                         container = container,
                         onOpenAlbum = { id -> navController.navigate(Routes.album(id)) },
                         onOpenPlayer = { navController.navigate(Routes.PLAYER) { launchSingleTop = true } },
+                        onOpenRemote = { navController.navigate(Routes.REMOTE) { launchSingleTop = true } },
                     )
                 }
                 composable(Routes.ALBUM) { entry ->
@@ -62,6 +64,9 @@ fun WearApp(container: AppContainer, openPlayerRequests: Int) {
                 }
                 composable(Routes.PLAYER) {
                     PlayerScreen(container = container)
+                }
+                composable(Routes.REMOTE) {
+                    RemoteScreen(container = container)
                 }
             }
         }

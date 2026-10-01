@@ -9,6 +9,7 @@ import com.azlegend.wear.data.MusicStore
 import com.azlegend.wear.playback.PlaybackStateStore
 import com.azlegend.wear.playback.PlayerConnection
 import com.azlegend.wear.playback.toMediaItem
+import com.azlegend.wear.remote.RemoteStore
 
 /** Hand-rolled dependency container; small enough that a DI framework would only add weight. */
 class AppContainer(context: Context) {
@@ -21,6 +22,9 @@ class AppContainer(context: Context) {
 
     val library = LibraryRepository(store, catalogRepository, isOnline = connectivity::hasInternet)
     val playbackState = PlaybackStateStore(appContext)
+
+    /** Which desktop launcher the music remote is paired with. */
+    val remote = RemoteStore(appContext)
     val player = PlayerConnection(appContext)
     val downloads = Downloads(appContext, library, store) { albumId ->
         player.refreshQueue(albumId) { id -> library.track(id)?.toMediaItem() }

@@ -60,4 +60,21 @@
     <string name="output_headphones">Headphones</string>
     <string name="output_none">No output</string>
     <string name="output_bluetooth_settings">Bluetooth settings</string>
+
+    <string name="remote_title">Desktop music</string>
+    <string name="remote_entry_hint">Switch songs on a paired launcher</string>
+    <string name="remote_pair_hint">Enter the code from the launcher: Settings › Watch remote</string>
+    <string name="remote_pair_placeholder">ABCD-EFGH</string>
+    <string name="remote_pair_code">Pairing code</string>
+    <string name="remote_pair">Pair</string>
+    <string name="remote_unpair">Unpair</string>
+    <string name="remote_connecting">Connecting…</string>
+    <string name="remote_waiting">Waiting for desktop…</string>
+    <string name="remote_no_desktop">Desktop not answering. Open the launcher and switch Watch remote on.</string>
+    <string name="remote_idle">Nothing playing</string>
+    <string name="remote_sending">Sending…</string>
+    <string name="remote_no_albums">No albums on the desktop</string>
+    <string name="remote_no_reply">No reply from desktop</string>
+    <string name="remote_not_sent">Couldn\'t send. Check the connection.</string>
+    <string name="remote_failed">Desktop: %1$s</string>
 </resources>

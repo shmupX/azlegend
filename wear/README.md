@@ -21,6 +21,10 @@ Google Pixel Watch 5 (Wear OS 7) and installed by sideloading; no Play Store, no
   silently), so a song added on a phone shows up on its own; "Sync catalog"
   fetches it immediately.
 
+- **Desktop music** (at the bottom of the library) is a remote for a paired desktop launcher: it
+  lists the albums of the AZ Legend player docked there and switches the song playing on the
+  desktop, with previous / pause / next. See [Desktop music remote](#desktop-music-remote).
+
 ## Build
 
 Requires JDK 17 and the Android SDK (platform 36, build-tools 36). `local.properties` with
@@ -72,6 +76,48 @@ If Wear OS refuses to write there (`Permission denied`), use the app's private f
 adb push track.mp3 /data/local/tmp/track.mp3
 adb shell run-as com.azlegend.wear sh -c 'mkdir -p files/Music/Midas_II && cp /data/local/tmp/track.mp3 files/Music/Midas_II/'
 ```
+
+## Desktop music remote
+
+Separate from playback on the watch: **Library > Desktop music** drives the AZ Legend player docked
+in a [cmg launcher](https://github.com/easierbycode/cmg) on another machine.
+
+1. In the launcher, open **Settings > WATCH REMOTE** and switch it on. It shows an eight-character
+   code such as `ABCD-EFGH`.
+2. On the watch, open **Desktop music**, type the code and confirm. It is remembered; **Unpair** is at
+   the bottom of the list.
+
+```
+watch --(internet)--> Firebase Realtime Database <--(internet)-- launcher --> AZ Legend player
+```
+
+The watch and the desktop never connect to each other. Both talk to the database over plain REST
+under the pairing code, so they need not share a network and the desktop needs no open port:
+
+```
+watch   --> /builders/<code>/music/launch    one slot, latest press wins
+watch   --> /builders/<code>/music/control   pause, resume, next, prev, sync
+desktop --> /builders/<code>/music/playing   what its player is doing
+desktop --> /builders/<code>/music/library   the albums it can play
+```
+
+The desktop half is `static/watch-music.js` in the cmg repo, and the same protocol is spoken by the
+[watchAmp](https://github.com/shmupX/watchAmp) app, so either watch app can drive the same launcher.
+The code is in `remote/` (pairing code, wire format, stream client) and `ui/RemoteScreen.kt`.
+
+- A song is not shown as switched until the desktop names the press; a press nobody answers says
+  "No reply from desktop" after 12 seconds rather than pretending.
+- The stream's first frame is whatever the last session left in the database, so "desktop is there"
+  waits for a write that arrives after it.
+- The pairing code is the only secret: the database is open to anyone who knows it. Everything read
+  from it is treated as untrusted (bounded, de-duplicated), and the launcher only plays tracks its
+  own player reported.
+- The stream is held only while the app is in the foreground.
+- No remote volume: the desktop player's protocol has no command for it.
+
+Testing it over adb has two traps: `adb shell input text` shows up in the watch keyboard's preview
+but never reaches the text field (tap the on-screen keys by coordinate instead), and the keyboard
+can take several seconds to appear (poll `dumpsys input_method | grep mInputShown=true`).
 
 ## Audio output
 

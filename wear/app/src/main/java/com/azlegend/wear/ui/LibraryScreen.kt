@@ -52,6 +52,7 @@ fun LibraryScreen(
     container: AppContainer,
     onOpenAlbum: (String) -> Unit,
     onOpenPlayer: () -> Unit,
+    onOpenRemote: () -> Unit,
 ) {
     val albums by container.library.albums.collectAsStateWithLifecycle()
     val initialized by container.library.initialized.collectAsStateWithLifecycle()
@@ -123,6 +124,16 @@ fun LibraryScreen(
                         textAlign = TextAlign.Center,
                     )
                 }
+            }
+            item {
+                FilledTonalButton(
+                    onClick = onOpenRemote,
+                    modifier = Modifier.fillMaxWidth().transformedHeight(this, spec),
+                    transformation = SurfaceTransformation(spec),
+                    icon = { Icon(painterResource(R.drawable.ic_desktop), null, Modifier.size(ButtonDefaults.IconSize)) },
+                    secondaryLabel = { Text(stringResource(R.string.remote_entry_hint), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                    label = { Text(stringResource(R.string.remote_title), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                )
             }
             item {
                 SyncButton(sync, spec) { container.library.refreshCatalog() }
